@@ -13,6 +13,7 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::orderBy('nombre')->get();
+
         return view('roles.index', compact('roles'));
     }
 
@@ -21,7 +22,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        return view('roles.nuevo');
     }
 
     /**
@@ -29,7 +30,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(self::misValidaciones());
+        Role::create($request->all());
+
+        return redirect()->route('roles.index')->with('mensaje', 'Se ha creado un rol nuevo');
     }
 
     /**
@@ -45,7 +49,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        //
+        return view('roles.editar', compact('role'));
     }
 
     /**
@@ -53,7 +57,11 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //
+        $request->validate(self::misValidaciones($role->id));
+        $role->update($request->all());
+
+        return redirect()->route('roles.index')->with('mensaje', 'Rol Actualizado');
+
     }
 
     /**
@@ -61,6 +69,16 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        $role->delete();
+
+        return redirect()->route('roles.index')->with('mensaje', 'Rol elimindo definitivamente');
+    }
+
+    private static function misValidaciones(?int $id = null): array
+    {
+        return [
+            'nombre' => ['required', 'string', 'min:3', 'max:25', 'unique:roles,nombre,'.$id],
+            'color' => ['required', 'color'],
+        ];
     }
 }
