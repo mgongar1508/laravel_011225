@@ -19,4 +19,9 @@ class Employee extends Model
     public function roles():BelongsToMany{
         return $this->belongsToMany(Role::class);
     }
+
+
+    public function getRoles(): array{
+        return $this->roles->pluck('id')->toArray();
+    }
 }

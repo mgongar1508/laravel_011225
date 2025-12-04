@@ -49,4 +49,5 @@
     </table>
 @endsection
 @section('alertas')
+<x-mensaje></x-mensaje>
 @endsection
